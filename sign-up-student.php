@@ -1,7 +1,6 @@
 <?php
     require_once("connect_vars.php");
     require_once("student-class.php");
-    require_once("employer-class.php");
 ?>
 
 <!DOCTYPE html>
@@ -13,44 +12,22 @@
     <title>Post Jobs</title>
 
     <!-- Bootstrap -->
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet">        
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">      
     <link href="assets/css/styles.css" rel="stylesheet">        
     <link href='http://fonts.googleapis.com/css?family=Nunito' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Alike' rel='stylesheet' type='text/css'>
 <body>
-
-
 <div class="container">
-    <img class="logo" src="assets/img/logo.jpg" alt="post jobs">
-    <br class="clear">
-    <nav class="navbar navbar-default" role="navigation">
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
+    <div class="col-md-12 index-navbar">
+    <img class="logo" src="assets/img/logo.gif" alt="post jobs">
+    <div class="btn-group index-button">
+  <button type="button" class="btn btn-warning"><a href="log_in.html">Log in</a></button>
     </div>
-
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav nav-pills">
-       <li><a href="index_logged-in.html">Home</a></li>
-  <li class="active"><a href="student.html">Students</a></li>
-  <li><a href="employer.html">Employers</a></li>
-    <li><a href="faculty.html">Faculty</a></li>
-    <li><a href="job.html">Jobs</a></li>
-    <li><a href="search.html">Search</a></li>
-    <li><a href="contact.html">Contact</a></li>
-        
-      </ul>
-     
-    </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
-</nav>
+  <div class="btn-group index-button">
+  <button type="button" class="btn btn-warning"><a href="sign-up-index.html">Sign-Up</a></button>
+</div>
+    <br class="clear">
+</div><!-- end col 12 -->
 
 <?php
     $student = new Student();
@@ -108,7 +85,7 @@
     }
 
 ?>
-
+<div class="content">
     <main>
         <h2>Sign up as a student - Job Site</h2>
         <section id="student" class="col-md-5 pull-left">
@@ -278,7 +255,7 @@
        </section>
     </main>
 </div>
-
+</div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->

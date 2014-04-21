@@ -1,6 +1,5 @@
 <?php
     require_once("connect_vars.php");
-    require_once("student-class.php");
     require_once("employer-class.php");
 ?>
 
@@ -13,119 +12,105 @@
     <title>Post Jobs</title>
 
     <!-- Bootstrap -->
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet">        
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">      
     <link href="assets/css/styles.css" rel="stylesheet">        
     <link href='http://fonts.googleapis.com/css?family=Nunito' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Alike' rel='stylesheet' type='text/css'>
 <body>
-
-
 <div class="container">
-    <img class="logo" src="assets/img/logo.jpg" alt="post jobs">
-    <br class="clear">
-    <nav class="navbar navbar-default" role="navigation">
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
+    <div class="col-md-12 index-navbar">
+    <img class="logo" src="assets/img/logo.gif" alt="post jobs">
+    <div class="btn-group index-button">
+  <button type="button" class="btn btn-warning"><a href="log_in.html">Log in</a></button>
     </div>
+  <div class="btn-group index-button">
+  <button type="button" class="btn btn-warning"><a href="sign-up-index.html">Sign-Up</a></button>
+</div>
+    <br class="clear">
+</div><!-- end col 12 -->
 
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav nav-pills">
-       <li><a href="index_logged-in.html">Home</a></li>
-  <li class="active"><a href="student.html">Students</a></li>
-  <li><a href="employer.html">Employers</a></li>
-    <li><a href="faculty.html">Faculty</a></li>
-    <li><a href="job.html">Jobs</a></li>
-    <li><a href="search.html">Search</a></li>
-    <li><a href="contact.html">Contact</a></li>
-        
-      </ul>
-     
-    </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
-</nav>
 
+<div class="content">
 <?php
-    $student = new Student();
+    $employer = new Employer();
 
     if (isset($_POST['submit'])){
         $dbc = mysqli_connect(HOST, USER, PASSWORD, DBNAME)
             or die('Error connecting to MySQL server.');
-        $student->name = mysqli_real_escape_string($dbc, trim($_POST['name']));
-        $student->email = mysqli_real_escape_string($dbc, trim($_POST['email']));
-        $student->phone = mysqli_real_escape_string($dbc, trim($_POST['phone']));
-        $student->category = mysqli_real_escape_string($dbc, (int)trim($_POST['category']));
-        $student->location = mysqli_real_escape_string($dbc, (int)trim($_POST['location']));
+        $employer->name = mysqli_real_escape_string($dbc, trim($_POST['name']));
+        $employer->contact_name = mysqli_real_escape_string($dbc, trim($_POST['contact_name']));
+        $employer->email = mysqli_real_escape_string($dbc, trim($_POST['email']));
+        $employer->phone = mysqli_real_escape_string($dbc, trim($_POST['phone']));
+        $employer->category = mysqli_real_escape_string($dbc, (int)trim($_POST['category']));
+        $employer->location = mysqli_real_escape_string($dbc, (int)trim($_POST['location']));
 
         if (!empty($_POST["skills"]) && !empty($_POST["skills"])) {
-            $student->skills  = $_POST["skills"];
-            $student->occupation = $_POST['occupation'];
+            $employer->skills  = $_POST["skills"];
+            $employer->occupation = $_POST['occupation'];
         }
 
-        if ($student->isEmpty()) {
+        if ($employer->isEmpty()) {
                 echo '<div class="row alert alert-danger">You must fill out all required fields before submitting the form.</div>';
         }
 
     }
 
-    if ($student->isEmpty() == false) {
-        $query = "INSERT INTO student (student_name, student_email, student_phone, 
-                                        student_category, student_location)
-                                VALUES ('$student->name', '$student->email', '$student->phone','$student->category', '$student->location')";
+    if ($employer->isEmpty() == false) {
+        $query = "INSERT INTO employer (employer_name, employer_contact_name, employer_email, employer_phone, 
+                                        employer_category, employer_location)
+                                VALUES ('$employer->name', '$employer->contact_name', '$employer->email', '$employer->phone','$employer->category', '$employer->location')";
 
         $result = mysqli_query($dbc, $query)
                 or die('Error connecting to server.');
 
-        $student_id = mysqli_insert_id($dbc);
-        $skills = $student->skills;
+        $employer_id = mysqli_insert_id($dbc);
+        $skills = $employer->skills;
         for ($i = 0; $i < count($skills); $i++) {
-            $student_skill = "student_skill_" . ($i + 1);
-            $array_query = "UPDATE student SET $student_skill = $skills[$i]
-                        WHERE student_id = LAST_INSERT_ID()";
+            $employer_skill = "employer_skill_" . ($i + 1);
+            $array_query = "UPDATE employer SET $employer_skill = $skills[$i]
+                        WHERE employer_id = LAST_INSERT_ID()";
             $array_result = mysqli_query($dbc, $array_query)
                 or die('Error inserting array values.');
         }
 
-        $occupation = $student->occupation;
+        $occupation = $employer->occupation;
         for ($i = 0; $i < count($occupation); $i++) {
-            $student_occupation = "student_occupation_" . ($i + 1);
-            $array_query = "UPDATE student SET $student_occupation = '$occupation[$i]'
-                        WHERE student_id = LAST_INSERT_ID()";
+            $employer_occupation = "employer_occupation_" . ($i + 1);
+            $array_query = "UPDATE employer SET $employer_occupation = '$occupation[$i]'
+                        WHERE employer_id = LAST_INSERT_ID()";
             $array_result = mysqli_query($dbc, $array_query)
                 or die('Error inserting array values.');
         }
 
         echo '<div class="row alert alert-success">Thank you. Here is a link to your profile: ' .
-                '<a href="student.php?id=' . $student_id . '">' . $student->name . '\'s profile</a></div>';
+                '<a href="employer.php?id=' . $employer_id . '">' . $employer->name . '\'s profile</a></div>';
         mysqli_close($dbc);
     }
 
 ?>
 
     <main>
-        <h2>Sign up as a student - Job Site</h2>
-        <section id="student" class="col-md-5 pull-left">
+        <h2>Sign up as a employer - Job Site</h2>
+        <section id="employer" class="col-md-5 pull-left">
             <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
                 <div class="form-group">
-                    <label for="name">Name: </label>
-                    <input  class="form-control" type="text" name="name" id="name" value="<?php echo $student->name; ?>">
+                    <label for="name">Company Name: </label>
+                    <input  class="form-control" type="text" name="name" id="name" value="<?php echo $employer->name; ?>">
                 </div>
 
                 <div class="form-group">
-                <label for="email">Email: </label>
-                <input  class="form-control" type="text" name="email" id="email" value="<?php echo $student->email; ?>">
+                    <label for="name">Contact Name: </label>
+                    <input  class="form-control" type="text" name="contact_name" id="contact_name" value="<?php echo $employer->contact_name; ?>">
                 </div>
 
                 <div class="form-group">
-                <label for="phone">Phone Number: </label>
-                <input  class="form-control" type="text" name="phone" id="phone" value="<?php echo $student->phone; ?>">
+                <label for="email">Contact Email: </label>
+                <input  class="form-control" type="text" name="email" id="email" value="<?php echo $employer->email; ?>">
+                </div>
+
+                <div class="form-group">
+                <label for="phone">Contact Phone Number: </label>
+                <input  class="form-control" type="text" name="phone" id="phone" value="<?php echo $employer->phone; ?>">
                 </div>
 
                 <div class="form-group">
@@ -143,8 +128,8 @@
                 </div>
 
                 <div class="form-group">
-                <label for="skills">Skills:</label>
-                <select multiple size="5" name="skills[]" id="skills" class="form-control">  
+                <label for="skills">Skills Needed:</label>
+                <select multiple="multiple" size="10" name="skills[]" id="skills" class="form-control">  
                     <option value="0001">.NET</option>
                     <option value="0002">3-D Studio Max</option>
                     <option value="0003">Access</option>
@@ -256,9 +241,9 @@
                 </div>
 
                 <div class="form-group">
-                <label for="occupation">Looking For: </label>
-                <select multiple class="form-control" size="1" name="occupation[]" id="occupation"><!--my selection list-->
-                    <option value="01">Internship</option>
+                <label for="occupation">Offering: </label>
+                <select multiple="multiple" size="4" class="form-control" name="occupation[]" id="occupation"><!--my selection list-->
+                    <option value="01"  property="selected">Internship</option>
                     <option value="02">Contract Work</option>
                     <option value="03">Part Time</option>
                     <option value="04">Full Time</option>
@@ -278,10 +263,14 @@
        </section>
     </main>
 </div>
-
+</div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
+
+    <script>
+    </script>
+
 </body>
 </html>
