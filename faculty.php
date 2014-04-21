@@ -1,6 +1,6 @@
 <?php
     require_once("connect_vars.php");
-    require_once("employer-class.php");
+    require_once("faculty-class.php");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -8,7 +8,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Employers</title>
+    <title>Faculty</title>
 
     <!-- Bootstrap -->
     <link href="assets/css/bootstrap.min.css" rel="stylesheet">
@@ -29,13 +29,13 @@
 
     $dbc = mysqli_connect(HOST, USER, PASSWORD, DBNAME)
     or die('Error connecting to MySQL server.');
-    $employer_id = $_GET['id'];
-    $query = "SELECT * FROM employer WHERE employer_id = $employer_id";
+    $faculty_id = $_GET['id'];
+    $query = "SELECT * FROM faculty WHERE faculty_id = $faculty_id";
     $result = mysqli_query($dbc, $query);
     $row = mysqli_fetch_array($result);
 
-    $employer = new Employer(); 
-    $employer->setEmployer($dbc, $row);
+    $faculty = new Faculty(); 
+    $faculty->setFaculty($dbc, $row);
 
  ?> 
 
@@ -62,8 +62,8 @@ e justo, fringilla vel, aliquet nec, vulputate eget, arcu. </p><br class="clear"
       <ul class="nav navbar-nav nav-pills">
        <li><a href="index_logged-in.html">Home</a></li>
         <li><a href="student.html">Students</a></li>
-        <li class="active"><a href="employer.html">Employers</a></li>
-      	<li><a href="faculty.html">Faculty</a></li>
+        <li><a href="employer.html">Employers</a></li>
+      	<li class="active"><a href="faculty.html">Faculty</a></li>
       	<li><a href="job.html">Jobs</a></li>
       	<li><a href="search.php">Search</a></li>
       	<li><a href="contact.html">Contact</a></li>
@@ -73,45 +73,37 @@ e justo, fringilla vel, aliquet nec, vulputate eget, arcu. </p><br class="clear"
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
-<div class="col-md-8 main"><h2>Meet Employer: <?php echo $employer->name ?></h2><img src="assets/img/pbhs.jpg" class="pbhs" alt="pbhs" height="100" width="100">
+<div class="col-md-8 main"><h2>Meet Faculty: <?php echo $faculty->name ?></h2><img src="assets/img/pbhs.jpg" class="pbhs" alt="pbhs" height="100" width="100">
   <?php
       echo '<p class="first">
-            Company Name: ' . $employer->name . '
+            Name: ' . $faculty->name . '
             <br>
-            Contact Name: ' . $employer->contact_name . '
+            Department/Discipline: ' . $faculty->department . '
             <br>
-            Contact Email: ' . $employer->email . '
+            Contact Email: ' . $faculty->email . '
             <br>
-            Contact Phone: ' . $employer->phone . '
+            Contact Phone: ' . $faculty->phone . '
             </p>
             <br class="clear">
             <p class="second">
-            Field: ' . $employer->category . '
+            Field: ' . $faculty->category . '
             <br>
             Skills Needed: ';
-            foreach ($employer->skills as $skill) {
+            foreach ($faculty->skills as $skill) {
                         echo $skill . '<br>';
-                    } 
-      echo  'Offering: ';
-            foreach ($employer->occupation as $occ) {
-                          echo $occ . '<br>';
                     }
-      echo  'Location Near: ' . $employer->location . '
+      echo  'Location Near: ' . $faculty->location . '
             </p>'
   ?>
-<h3>Business Overview</h3><p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis partu
+<h3>Introduction</h3><p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis partu
 rient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec ped
 e justo, fringilla vel, aliquet nec, vulputate eget, arcu. </p>
-<h3>Top Reasons to Work Here</h3><p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis partu
-rient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec ped
-e justo, fringilla vel, aliquet nec, vulputate eget, arcu. </p></div><!-- end col 8 -->
+</div><!-- end col 8 -->
 
 <div class="col-md-4 aside"><div class="btn-group">
   <button type="button" class="btn btn-warning"><a href="index_logged-in.html">Edit My Profile</a></button>
 </div>
-<h3>Positions Available</h3><p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis partu
-rient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec ped
-e justo, fringilla vel, aliquet nec, vulputate eget, arcu.</p>
+
 <h3>Portfolio Albums</h3><p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis partu
 rient montes, nascetur ridiculus mus. Donec quam felis,</p><h3>Portfolio Videos</h3><p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis partu
 rient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec ped

@@ -29,6 +29,7 @@
     <br class="clear">
 </div><!-- end col 12 -->
 
+<div class="content">
 <?php
     $student = new Student();
 
@@ -85,7 +86,6 @@
     }
 
 ?>
-<div class="content">
     <main>
         <h2>Sign up as a student - Job Site</h2>
         <section id="student" class="col-md-5 pull-left">

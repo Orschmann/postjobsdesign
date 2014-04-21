@@ -44,7 +44,7 @@
         $employer->category = mysqli_real_escape_string($dbc, (int)trim($_POST['category']));
         $employer->location = mysqli_real_escape_string($dbc, (int)trim($_POST['location']));
 
-        if (!empty($_POST["skills"]) && !empty($_POST["skills"])) {
+        if (!empty($_POST["skills"]) && !empty($_POST["occupation"])) {
             $employer->skills  = $_POST["skills"];
             $employer->occupation = $_POST['occupation'];
         }

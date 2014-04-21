@@ -1,6 +1,7 @@
 <?php
 class User
 {
+    public $id = "";
     public $name = "";
     public $email = "";
     public $phone = "";
@@ -11,10 +12,11 @@ class User
     public $type = "";
 
     public function setUser($dbc, $row) {
+        $this->id = $row[$this->type . '_id'];
         $this->setCategory($dbc, $row);
         $this->setSkills($dbc, $row);
         $this->setLocation($dbc, $row);
-        $this->setOccupation($dbc, $row);
+        if($this->type != "faculty"){$this->setOccupation($dbc, $row);}
     }
 
     public function setSkills($dbc, $row) {
@@ -51,13 +53,5 @@ class User
         $this->category = (mysqli_fetch_object($cat_query)->cat_name);
     }
 
-    public function isEmpty() {
-        if (empty($this->name) || empty($this->email) || empty($this->phone) || empty($this->category) || empty($this->skills) || empty($this->occupation) || empty($this->location)) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
 }
 ?>

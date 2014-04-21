@@ -1,122 +1,118 @@
 <?php
     require_once("connect_vars.php");
-    require_once("student-class.php");
-    require_once("employer-class.php");
-
+    require_once("faculty-class.php");
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Employers</title>
+    <title>Post Jobs</title>
 
     <!-- Bootstrap -->
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
-        
-        <link href="assets/css/styles.css" rel="stylesheet">
-        
-        <link href='http://fonts.googleapis.com/css?family=Nunito' rel='stylesheet' type='text/css'>
-        <link href='http://fonts.googleapis.com/css?family=Alike' rel='stylesheet' type='text/css'>
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">      
+    <link href="assets/css/styles.css" rel="stylesheet">        
+    <link href='http://fonts.googleapis.com/css?family=Nunito' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Alike' rel='stylesheet' type='text/css'>
+<body>
+<div class="container">
+    <div class="col-md-12 index-navbar">
+    <img class="logo" src="assets/img/logo.gif" alt="post jobs">
+    <div class="btn-group index-button">
+  <button type="button" class="btn btn-warning"><a href="log_in.html">Log in</a></button>
+    </div>
+  <div class="btn-group index-button">
+  <button type="button" class="btn btn-warning"><a href="sign-up-index.html">Sign-Up</a></button>
+</div>
+    <br class="clear">
+</div><!-- end col 12 -->
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-  </head>
- <?php
-    $display_search_field = true;
-    $display_search_results = false;
 
+<div class="content">
+<?php
+    $faculty = new Faculty();
 
     if (isset($_POST['submit'])){
-      $type = $_POST['type'];
-      $category = $_POST['category'];
-      $category_type = $type . "_category";
-      $display_search_field = false;
-      $display_search_results = true;  
+        $dbc = mysqli_connect(HOST, USER, PASSWORD, DBNAME)
+            or die('Error connecting to MySQL server.');
+        $faculty->name = mysqli_real_escape_string($dbc, trim($_POST['name']));
+        $faculty->department = mysqli_real_escape_string($dbc, trim($_POST['department']));
+        $faculty->email = mysqli_real_escape_string($dbc, trim($_POST['email']));
+        $faculty->phone = mysqli_real_escape_string($dbc, trim($_POST['phone']));
+        $faculty->category = mysqli_real_escape_string($dbc, (int)trim($_POST['category']));
+        $faculty->location = mysqli_real_escape_string($dbc, (int)trim($_POST['location']));
 
-      $dbc = mysqli_connect(HOST, USER, PASSWORD, DBNAME)
-             or die('Error connecting to MySQL server.');
+        if (!empty($_POST["skills"])) {
+            $faculty->skills  = $_POST["skills"];
+        }
 
-      $query = "SELECT * FROM `$type` WHERE $category_type = '$category'";
-
-      if (!empty($_POST['skills'])) {
-          $skills = array();
-          $skills = $_POST['skills'];
-          $i = 1;
-          $skill_ids = "(";
-          foreach ($skills as $skill) {
-            $skill_ids .= "'" . $skill . "',";
-          }
-          $skill_ids .= ")";
-          $skill_ids = substr_replace($skill_ids,"", strrpos($skill_ids, ','), 1);
-          for($i = 0; $i < count($skills); $i++)  {
-            $query .= " AND " . $type . "_skill_" . ($i+1) . " in " . $skill_ids;
-          }
-          
-      }
-
-      if (!empty($_POST['location'])) {
-        $location = $_POST['location'];
-        $query .= " AND " . $type . "_location =" . $location;
-      }
-      $result = mysqli_query($dbc, $query);
-      #$row = mysqli_fetch_array($result);
+        if ($faculty->isEmpty()) {
+                echo '<div class="row alert alert-danger">You must fill out all required fields before submitting the form.</div>';
+        }
 
     }
 
- ?>
+    if ($faculty->isEmpty() == false) {
+        $query = "INSERT INTO faculty (faculty_name, faculty_department, faculty_email, faculty_phone, 
+                                        faculty_category, faculty_location)
+                                VALUES ('$faculty->name', '$faculty->department', '$faculty->email', '$faculty->phone','$faculty->category', '$faculty->location')";
 
-  <body>
-    <div class="container">
-    <img class="logo" src="assets/img/logo.jpg" alt="post jobs">
-    <p class="info">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean comodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis partu
-rient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec ped
-e justo, fringilla vel, aliquet nec, vulputate eget, arcu. </p><br class="clear">
-    <nav class="navbar navbar-default" role="navigation">
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-    </div>
+        $result = mysqli_query($dbc, $query)
+                or die('Error connecting to server.');
 
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav nav-pills">
-       <li><a href="index_logged-in.html">Home</a></li>
-        <li><a href="student.html">Students</a></li>
-        <li><a href="employer.html">Employers</a></li>
-        <li><a href="faculty.html">Faculty</a></li>
-        <li><a href="job.html">Jobs</a></li>
-        <li class="active"><a href="search.php">Search</a></li>
-        <li><a href="contact.html">Contact</a></li>
-        
-      </ul>
-     
-    </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
-</nav>
-<div class="col-md-6 main">
-  <?php if($display_search_field == true) { ?>
-  <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
-      <div class="form-group">
-          <label for="category">Select one category:</label>
-          <select class="form-control" size="1" name="type" id="type">
-              <option value="student">Student</option>
-              <option value="employer">Employer</option>
-              <option value="faculty">Faculty</option>
-          </select>
+        $faculty_id = mysqli_insert_id($dbc);
+        $skills = $faculty->skills;
+        for ($i = 0; $i < count($skills); $i++) {
+            $faculty_skill = "faculty_skill_" . ($i + 1);
+            $array_query = "UPDATE faculty SET $faculty_skill = $skills[$i]
+                        WHERE faculty_id = LAST_INSERT_ID()";
+            $array_result = mysqli_query($dbc, $array_query)
+                or die('Error inserting array values.');
+        }
 
-          <div class="form-group">
+        $occupation = $faculty->occupation;
+        for ($i = 0; $i < count($occupation); $i++) {
+            $faculty_occupation = "faculty_occupation_" . ($i + 1);
+            $array_query = "UPDATE faculty SET $faculty_occupation = '$occupation[$i]'
+                        WHERE faculty_id = LAST_INSERT_ID()";
+            $array_result = mysqli_query($dbc, $array_query)
+                or die('Error inserting array values.');
+        }
+
+        echo '<div class="row alert alert-success">Thank you. Here is a link to your profile: ' .
+                '<a href="faculty.php?id=' . $faculty_id . '">' . $faculty->name . '\'s profile</a></div>';
+        mysqli_close($dbc);
+    }
+
+?>
+
+    <main>
+        <h2>Sign up as faculty - Job Site</h2>
+        <section id="faculty" class="col-md-5 pull-left">
+            <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+                <div class="form-group">
+                    <label for="name">Name: </label>
+                    <input  class="form-control" type="text" name="name" id="name" value="<?php echo $faculty->name; ?>">
+                </div>
+
+                <div class="form-group">
+                    <label for="name">Department/Discipline: </label>
+                    <input  class="form-control" type="text" name="department" id="department" value="<?php echo $faculty->department; ?>">
+                </div>
+
+                <div class="form-group">
+                <label for="email">Email: </label>
+                <input  class="form-control" type="text" name="email" id="email" value="<?php echo $faculty->email; ?>">
+                </div>
+
+                <div class="form-group">
+                <label for="phone">Phone Number: </label>
+                <input  class="form-control" type="text" name="phone" id="phone" value="<?php echo $faculty->phone; ?>">
+                </div>
+
+                <div class="form-group">
                 <label for="category">Select one category:</label>
                 <select class="form-control" size="1" name="category" id="category">
                     <option value="01">Database and Information Systems</option>
@@ -128,9 +124,9 @@ e justo, fringilla vel, aliquet nec, vulputate eget, arcu. </p><br class="clear"
                     <option value="07">User Hardware and Support/Help Desk</option>
                     <option value="08">Web Design and Development</option>
                 </select>
-          </div>
+                </div>
 
-          <div class="form-group">
+                <div class="form-group">
                 <label for="skills">Skills:</label>
                 <select multiple="multiple" size="10" name="skills[]" id="skills" class="form-control">  
                     <option value="0001">.NET</option>
@@ -242,60 +238,28 @@ e justo, fringilla vel, aliquet nec, vulputate eget, arcu. </p><br class="clear"
                     <option value="0107">XNG</option>
                 </select>
                 </div>
-          </div>
 
-          <div class="form-group">
+                <div class="form-group">
                 <label for="location">Location Near: </label>
                 <select class="form-control" size="1" name="location" id="location">
-                    <option value=""></option>
                     <option value="001">Santa Rosa</option>
                     <option value="002">Napa</option>
                     <option value="003">Sonoma</option>
                 </select>
-          </div>
-      <input class="btn btn-primary" type="submit" name="submit">
-  </form>
-  <?php 
-  } 
-
-  if($display_search_results == true) {
-    while($row = mysqli_fetch_array($result)){
-      switch ($type) {
-        case "student":
-            $user = new Student();
-            $user->setStudent($dbc, $row);            
-            $user->printStudent();
-            echo '<a href="'. $type .'.php?id=' . $user->id . '">Go to profile...</a><br>';
-            echo "<hr>";
-            break;
-        case "employer":
-            $user = new Employer();
-            $user->setEmployer($dbc, $row);
-            $user->printEmployer();
-            echo '<a href="'. $type .'.php?id=' . $user->id . '">Go to profile...</a><br>';
-            echo "<hr>";
-            break;
-      }
-    }
-  }
-
-  ?>
-
+                </div>
+                <input class="btn btn-primary" type="submit" name="submit">
+            </form>
+       </section>
+    </main>
 </div>
-
-<div class="col-md-12 footer">
-        <a href="index_logged-in.html">Home</a>
-        <a href="student.html">Students</a>
-        <a href="employer.html">Employers</a>
-        <a href="faculty.html">Faculty</a>
-        <a href="job.html">Jobs</a>
-        <a href="search.html">Search</a>
-        <a href="contact.html">Contact</a></div>
-</div><!-- end container -->
-
+</div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
-  </body>
+
+    <script>
+    </script>
+
+</body>
 </html>
